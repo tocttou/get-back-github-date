@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Get Back Github Date",
+  "version": "1.0.0",
+  "description": "Get back the account creation date on Github profile page",
+  "browser_action": {
+  "default_title": "Get Back Github Date"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "content_scripts": [
+      {
+        "matches": ["https://github.com/*"],
+        "js": ["bundle/bundle.js"],
+        "run_at": "document_end"
+      }
+    ]
+}
