@@ -1,3 +1,5 @@
+import "whatwg-fetch";
+
 if (window.location.pathname.split("/").length === 2) {
   const apparentUsername = window.location.pathname.split("/").pop();
   injectCreationDate(apparentUsername);
