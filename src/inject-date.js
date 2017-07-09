@@ -10,11 +10,13 @@ if (window.location.pathname.split("/").length === 2) {
 
 // history API cannot be used directly in content-scripts
 function detectURLChangeAndInjectDate(apparentUsername) {
-  let currentURL = window.location.href;
   setInterval(
     () => {
-      if (currentURL !== window.location.href) {
-        injectCreationDate(apparentUsername);
+      const leftPane = getLeftPane();
+      const lastElementInPane = getLastInPane(leftPane);
+ 
+      if (typeof lastElementInPane === "undefined" || lastElementInPane.getAttribute("aria-label") !== "createdAt") {
+            injectCreationDate(apparentUsername);
       }
     },
     1000
@@ -33,17 +35,14 @@ async function injectCreationDate(apparentUsername) {
       .slice(1, 4)
       .join(" ");
 
-    const leftPane = document.querySelector(
-      "#js-pjax-container > div > div.col-3.float-left.pr-3 > ul"
-    );
+    const leftPane = getLeftPane();
+    const lastElementInPane = getLastInPane(leftPane);
 
-    const lastElementInPane = Array.from(
-      leftPane.getElementsByTagName("li")
-    ).pop();
     if (
-      typeof lastElementInPane === "undefined" ||
-      lastElementInPane.getAttribute("aria-label") !== "createdAt"
+        typeof lastElementInPane === "undefined" ||
+        lastElementInPane.getAttribute("aria-label") !== "createdAt"
     ) {
+      
       const dateElement = document.createElement("li");
       dateElement.innerText = creationDate;
       dateElement.setAttribute(
@@ -55,4 +54,16 @@ async function injectCreationDate(apparentUsername) {
       leftPane.appendChild(dateElement);
     }
   }
+}
+
+function getLeftPane() {
+    return document.querySelector(
+      "#js-pjax-container > div > div.col-3.float-left.pr-3 > ul"
+    );
+}
+
+function getLastInPane(leftPane) {
+    return Array.from(
+      leftPane.getElementsByTagName("li")
+    ).pop();
 }
